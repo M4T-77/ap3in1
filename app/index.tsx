@@ -1,10 +1,43 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, Alert, TouchableOpacity } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  Alert,
+  TouchableOpacity,
+  SafeAreaView,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+} from 'react-native';
 import { useRouter } from 'expo-router';
 
 const initialState = { email: '', password: '' };
 
-// Función de validación inline
+// Colores consistentes
+const Colors = {
+  offWhite: '#FAF9F6',
+  brown: '#8B4513',
+  black: '#000000',
+  lightGray: '#D3D3D3',
+  error: '#FF0000',
+  lightBrown: '#A0826D',
+  subtleGray: '#F0EBE3',
+  textSubtle: '#5C3D2E',
+};
+
+// Componente del logo
+const Header = () => (
+  <View style={styles.headerContainer}>
+    <Text style={styles.logoText}>
+      <Text style={styles.logoBold}>love</Text>
+      <Text style={styles.logoApp}>App</Text>
+    </Text>
+  </View>
+);
+
+// Función de validación
 const validateLogin = ({ email, password }: { email: string; password: string }) => {
   const errors: { email?: string; password?: string } = {};
   
@@ -23,6 +56,20 @@ const validateLogin = ({ email, password }: { email: string; password: string })
   
   return Object.keys(errors).length > 0 ? errors : null;
 };
+
+// Componente para credenciales de prueba
+const CredencialesPrueba = ({ onPress }: { onPress: () => void }) => (
+  <TouchableOpacity onPress={onPress} style={styles.testContainer}>
+    <Text style={styles.testTitle}>Credenciales de Prueba</Text>
+    <Text style={styles.testDescription}>
+      Toca aquí para rellenar automáticamente los datos de inicio de sesión.
+    </Text>
+    <View style={styles.credentials}>
+      <Text style={styles.credText}>Email: developer@test.com</Text>
+      <Text style={styles.credText}>Contraseña: 123456</Text>
+    </View>
+  </TouchableOpacity>
+);
 
 export default function PantallaLogin() {
   const [email, setEmail] = useState('');
@@ -43,75 +90,133 @@ export default function PantallaLogin() {
     }
   };
 
+  const handleFillCredentials = () => {
+    setEmail('developer@test.com');
+    setPassword('123456');
+  };
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Iniciar Sesión</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Correo Electrónico"
-        placeholderTextColor="#A0826D"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
-      {errors.email ? <Text style={styles.errorText}>{errors.email}</Text> : null}
-      <TextInput
-        style={styles.input}
-        placeholder="Contraseña"
-        placeholderTextColor="#A0826D"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
-      {errors.password ? <Text style={styles.errorText}>{errors.password}</Text> : null}
-      <TouchableOpacity style={styles.button} onPress={manejarLogin}>
-        <Text style={styles.buttonText}>Iniciar Sesión</Text>
-      </TouchableOpacity>
-    </View>
+    <SafeAreaView style={styles.safeArea}>
+      <Header />
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.container}
+      >
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="Correo Electrónico"
+            placeholderTextColor={Colors.lightBrown}
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
+          {errors.email ? <Text style={styles.errorText}>{errors.email}</Text> : null}
+          <TextInput
+            style={styles.input}
+            placeholder="Contraseña"
+            placeholderTextColor={Colors.lightBrown}
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+          />
+          {errors.password ? <Text style={styles.errorText}>{errors.password}</Text> : null}
+          <TouchableOpacity style={styles.button} onPress={manejarLogin}>
+            <Text style={styles.buttonText}>Iniciar Sesión</Text>
+          </TouchableOpacity>
+          <CredencialesPrueba onPress={handleFillCredentials} />
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: Colors.offWhite,
+  },
+  headerContainer: {
+    paddingVertical: 15,
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.lightGray,
+    backgroundColor: Colors.offWhite,
+  },
+  logoText: {
+    fontSize: 28,
+  },
+  logoBold: {
+    fontWeight: 'bold',
+    color: Colors.black,
+  },
+  logoApp: {
+    color: Colors.brown,
+  },
   container: {
     flex: 1,
+  },
+  scrollContainer: {
+    flexGrow: 1,
     justifyContent: 'center',
     padding: 20,
-    backgroundColor: '#FAF9F6',
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#000000',
-    marginBottom: 30,
-    textAlign: 'center',
   },
   input: {
     height: 50,
-    borderColor: '#D3D3D3',
+    borderColor: Colors.lightGray,
     borderWidth: 1,
     borderRadius: 10,
     paddingHorizontal: 15,
     marginBottom: 5,
-    color: '#000000',
-    backgroundColor: '#FAF9F6',
+    color: Colors.black,
+    backgroundColor: Colors.offWhite,
     fontSize: 16,
   },
   errorText: {
-    color: '#FF0000',
+    color: Colors.error,
     marginBottom: 10,
     marginLeft: 5,
   },
   button: {
-    backgroundColor: '#8B4513',
+    backgroundColor: Colors.brown,
     borderRadius: 10,
     marginTop: 20,
     paddingVertical: 15,
     alignItems: 'center',
   },
   buttonText: {
-    color: '#FAF9F6',
+    color: Colors.offWhite,
     fontSize: 18,
     fontWeight: 'bold',
-  }
+  },
+  testContainer: {
+    backgroundColor: Colors.subtleGray,
+    padding: 15,
+    marginTop: 20,
+    borderRadius: 10,
+    shadowColor: Colors.black,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  testTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: Colors.brown,
+    marginBottom: 5,
+  },
+  testDescription: {
+    fontSize: 14,
+    color: Colors.textSubtle,
+    marginBottom: 10,
+  },
+  credentials: {
+    marginTop: 5,
+  },
+  credText: {
+    fontSize: 14,
+    color: Colors.textSubtle,
+  },
 });
