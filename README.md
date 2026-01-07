@@ -1,4 +1,9 @@
-> Edited for use in IDX on 07/09/12
+
+> Edited
+
+https://github.com/user-attachments/assets/6c296e72-30ef-4617-9233-79e7ed5b532b
+
+ for use in IDX on 07/09/12
 
 # Welcome to your Expo app 👋
 
